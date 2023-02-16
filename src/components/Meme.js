@@ -1,6 +1,6 @@
 import React from "react";
 import axios from "axios";
-
+import MemesList from "./MemesList";
 
 const baseURL = "https://api.imgflip.com/get_memes";
 
@@ -13,12 +13,12 @@ export default function Meme() {
       setMemes(response.data.data.memes);
     });
   }, []);
-  
+
   function randomImage() {
     let randImg = Math.floor(Math.random() * memes.length);
     const url = memes[randImg].url;
-    
-    console.log(randImg)
+
+    console.log(randImg);
     setRandImage(url);
   }
 
@@ -26,7 +26,7 @@ export default function Meme() {
     topText: "",
     bottomText: "",
   });
-  
+
   function handleChange(event) {
     setMyInput((prevInput) => {
       return {
@@ -36,23 +36,29 @@ export default function Meme() {
     });
   }
 
-  const [data,setData] = React.useState({
-    topText: '',
-    bottomText:'',
-    image:''
-  })
-  function sendToList(){
+  const [data, setData] = React.useState({
+    
+  });
+
+  const [list, setList] =React.useState([])
+
+  function sendToList() {
     setData({
       topText: myInput.topText,
-    bottomText:myInput.bottomText,
-    image:randImage
-    })
+      bottomText: myInput.bottomText,
+      image: randImage,
+    });
     
+    setList((prevList)=> {
+      return[
+      ...prevList,
+      <MemesList topText={data.topText} image={data.image} bottomText={data.bottomText}/>
+      ]
+    })
   }
-  
+
   return (
     <main>
-      
       <div className="form">
         <input
           type="text"
@@ -80,9 +86,18 @@ export default function Meme() {
         <p className="bottom-text">{myInput.bottomText}</p>
       </div>
       <div>
-      <button onClick={() => sendToList() }>Send</button>
+        <button onClick={() => sendToList()}>Send</button>
       </div>
-      
+      <ul>
+        {list.map((item, index) => {
+                    
+          return (
+            <li key={index}>
+              {item} 
+            </li>
+          );
+        })}
+      </ul>
     </main>
   );
 }
